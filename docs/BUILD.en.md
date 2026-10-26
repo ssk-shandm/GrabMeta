@@ -39,7 +39,7 @@ This command merges `src-tauri/tauri.install-test.conf.json` and does not modify
 | Item | Test value |
 | --- | --- |
 | Product name / NSIS registry subkey | `GrabMeta Install Test` |
-| App identifier / config directory name | `com.ssk-shandm.ytdlp-gui.install-test` |
+| App identifier / config directory name | `com.ssk-shandm.grabmeta.install-test` |
 | Main EXE | `grabmeta-install-test.exe` |
 | Start menu folder | `GrabMeta Install Test` |
 | WebView2 install mode | `skip`, which does not install, uninstall, or upgrade the existing runtime |
@@ -57,7 +57,7 @@ The isolated configuration's `silent: null` is a JSON merge patch. When the type
 ## Current installation configuration
 
 - Product name: `GrabMeta`; the window title is the Chinese edition name (`GrabMeta 中文版`).
-- App identifier: `com.ssk-shandm.ytdlp-gui`.
+- App identifier: `com.ssk-shandm.grabmeta`. Renamed from `com.ssk-shandm.ytdlp-gui` in 2.3.3 to match the product name; on startup the app migrates `settings.json` from the old config directory once, so upgrading users keep their download directory and preferences.
 - NSIS: per-user installation, with Simplified Chinese or English installer UI, selectable at install time.
 - The installer contains only the GUI, the project LICENSE, and the documentation. Third-party tools are downloaded after first launch into the current user's app tools directory (`bin/`). The main EXE does not embed FFmpeg.
 - WebView2: `downloadBootstrapper`. When the runtime is missing, network access is required; this is not a fully offline installer.

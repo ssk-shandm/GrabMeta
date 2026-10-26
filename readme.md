@@ -6,7 +6,7 @@
 
 **yt-dlp 视频下载工具的 Windows 中文图形界面**
 
-[![Version](https://img.shields.io/github/v/release/ssk-shandm/grabmeta?label=version)](https://github.com/ssk-shandm/grabmeta/releases)
+[![Version](https://img.shields.io/github/v/release/ssk-shandm/GrabMeta?label=version)](https://github.com/ssk-shandm/GrabMeta/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078D6?logo=windows&logoColor=white)](#开发启动)
 [![Vue](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -124,12 +124,13 @@ Tauri/Windows 打包所需的应用图标位于 `frontend/src-tauri/icons/`；�
 
 安装包内的 `licenses/` 目录仅提供上游来源与使用说明，并不代表安装包包含第三方工具，也不构成第三方项目的完整源码材料。详情请参阅 [第三方工具与分发许可](docs/THIRD_PARTY.md)。
 
+## 系统要求
+
+- 最低支持 **Windows 10 / 11**（x64）。这两个系统自带 WebView2 Runtime，本项目不再为缺少 WebView2 的旧版 Windows 做主动适配。
+- 安装器保留 `downloadBootstrapper` 联网引导作为兜底；缺少运行时且无法联网的机器不在支持范围内。
+
 ## 待办事项
 
 - **许可证**：`number-precision` 已由本项目自有的 MIT 实现替换（`frontend/vendor/number-precision`），当前版本不再依赖上游 1.6.0。上游缺失的完整版权声明暂不跟进，且不得依据 npm 作者字段补写；若将来改回上游包，需重新处理该缺口。
-- **WebView2 干净系统验收（暂缓，待有人提交 issue 后再做）**：在未安装 WebView2 Runtime 的干净 Windows 机器上，验证安装、首次启动、联网引导，以及断网和标准用户场景。Linux 虚拟机无法替代该验证，因为 WebView2 与 NSIS 安装器仅可在 Windows 上运行。验收结果请记入 `docs/TESTING.md`。
-- **历史工具再分发材料**（不影响当前安装包使用，仅在再分发 yt-dlp / FFmpeg 时需要）：
-  - 补齐 yt-dlp 打包组件的完整对应源码及必要构建材料；
-  - 对 FFmpeg 官方归档与本地两个 EXE 逐一比对；
-  - 补齐 FFmpeg 静态依赖的许可/版权通知、准确版本、源码、补丁和必要构建脚本；
-  - 核验发布页可直接取得的完整对应源码归档或稳定入口。
+
+历史工具（yt-dlp / FFmpeg）的再分发材料待办已清除：当前安装包不包含任何第三方工具二进制，工具在首次启动时从上游下载。若将来改为随包分发工具，须重新完成独立的许可与对应源码审核，详见 [第三方工具与许可](docs/THIRD_PARTY.md) 与 [许可审核清单](licenses/RELEASE-CHECKLIST.md)。

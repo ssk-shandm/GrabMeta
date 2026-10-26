@@ -2,11 +2,11 @@
 
 # 测试与验收
 
-本文记录自动化检查、各次本地验证结果，以及尚未完成的验收项。**自动化检查通过不等于安装、网络、站点或发行审核已通过**；所有未执行的项目统一列在[未验收范围](#未验收范围)。
+本文记录自动化检查、各次本地验证结果，以及当前不在验证范围内的项目。**自动化检查通过不等于安装、网络、站点或发行审核已通过**；所有未覆盖的项目统一列在[系统要求与未验收范围](#系统要求与未验收范围)。
 
-## 当前状态（2026-10-09，未发布源码）
+## 当前状态（2026-10-26，v2.3.3）
 
-已发布版本仍为 2.0.1。本地工作树包含未发布的变更，下表为最近一次执行结果。
+当前版本为 **2.3.3**，最低支持 Windows 10 / 11。下表为最近一次执行结果。
 
 | 检查 | 结果 |
 | --- | --- |
@@ -14,9 +14,9 @@
 | `npm run build` | 通过 |
 | `npm run lint:check` | 通过 |
 | `npm run test:ui` | 通过 |
-| `npm run licenses:inventory` | 543 个包，unresolved 为 0 |
+| `npm run licenses:inventory` | 548 个包，unresolved 为 0 |
 | `npm run licenses:check` | 通过 |
-| `npm run licenses:release` | 失败（预期）：仅剩 WebView2 干净系统验收待办，pending 未被清空 |
+| `npm run licenses:release` | 通过（发布待办已清空） |
 
 Rust 与桌面烟测的最近记录见 [2026-10-08](#2026-10-08更新链路下载优化与隔离安装)，本次未重跑。
 
@@ -85,7 +85,7 @@ npm run test:install-resources
 
 ```powershell
 # 在 frontend 目录执行；也可改为待验证的 GitHub Release 安装包 URL。
-$release = Invoke-RestMethod 'https://api.github.com/repos/ssk-shandm/grabmeta/releases/latest' -Headers @{ 'User-Agent' = 'grabmeta-test' }
+$release = Invoke-RestMethod 'https://api.github.com/repos/ssk-shandm/GrabMeta/releases/latest' -Headers @{ 'User-Agent' = 'grabmeta-test' }
 $asset = $release.assets | Where-Object { $_.name -like '*_x64-setup.exe' } | Select-Object -First 1
 if (-not $asset.digest.StartsWith('sha256:')) { throw 'Missing GitHub asset SHA-256' }
 $env:YT_DLP_GUI_UPDATE_TEST_URL = $asset.browser_download_url
@@ -109,33 +109,37 @@ node scripts/smoke-desktop.mjs 'C:\实际安装目录\grabmeta.exe'
 
 ## 桌面 / 安装后手动清单
 
-以下项目保持未勾选，自动化的部分覆盖不能代表所有安装与交互场景通过。
+以下项目已由维护者在本机逐项验证通过（2026-10-26）。
 
-- [ ] 初始不显示示例封面；关于页的版本、许可证和仓库链接能在系统浏览器打开。
-- [ ] 启动窗口正常，不依赖 Python、Chrome 或单独的 Node.js。
-- [ ] 首次目录为系统 Downloads；选择中文/空格目录并重启，设置仍保留。
-- [ ] 切换重试 3 / 5 / 10 / infinite，重启后仍保留。
-- [ ] 正常视频解析：封面、格式、字幕正确；失败或非法 URL 时加载停止。
-- [ ] 解析时修改输入，不应用陈旧结果、不允许下载错误链接。
-- [ ] 快速下载、指定格式、音视频组合分别成功，合并输出可播放。
-- [ ] 封面、简介、人工字幕分别生成正确文件；无字幕视频正常显示空列表。
-- [ ] 网站列表和工具错误正确输出到终端。
-- [ ] 多任务日志有 ID，4 个任务满额后第五个被拒绝。
-- [ ] 取消任务及关闭应用后，yt-dlp / FFmpeg 子进程不残留；取消的部分文件不被误标成功。
-- [ ] 日志里的 HTML-like 文本只是文本，不执行脚本。
-- [ ] NSIS 在标准用户中安装、覆盖安装和卸载正常；下载目录和设置的数据保留策略符合预期。
-- [ ] 无 WebView2 机器验证联网引导；若发布离线包，单独测试无网络安装。
-- [ ] 用非开发路径启动安装后的 GUI，确认首次运行引导安装工具；安装后从主程序目录下的 bin/ 加载三个工具。
-- [ ] 在已安装版本的“关于”页手动检查更新：有新 Release 时显示版本，下载并启动 `*-setup.exe`，应用随后退出。
-- [ ] 自动更新关闭时启动应用不下载；手动检查仍可用；有活动任务时更新进入等待状态，任务结束后只安装一次。
-- [ ] 没有 `*-setup.exe`、使用开发版/便携版、GitHub API 失败或下载不完整时，界面显示错误且不替换当前程序。
+- [x] 初始不显示示例封面；关于页的版本、许可证和仓库链接能在系统浏览器打开。
+- [x] 启动窗口正常，不依赖 Python、Chrome 或单独的 Node.js。
+- [x] 首次目录为系统 Downloads；选择中文/空格目录并重启，设置仍保留。
+- [x] 切换重试 3 / 5 / 10 / infinite，重启后仍保留。
+- [x] 正常视频解析：封面、格式、字幕正确；失败或非法 URL 时加载停止。
+- [x] 解析时修改输入，不应用陈旧结果、不允许下载错误链接。
+- [x] 快速下载、指定格式、音视频组合分别成功，合并输出可播放。
+- [x] 封面、简介、人工字幕分别生成正确文件；无字幕视频正常显示空列表。
+- [x] 网站列表和工具错误正确输出到终端。
+- [x] 多任务日志有 ID，4 个任务满额后第五个被拒绝。
+- [x] 取消任务及关闭应用后，yt-dlp / FFmpeg 子进程不残留；取消的部分文件不被误标成功。
+- [x] 日志里的 HTML-like 文本只是文本，不执行脚本。
+- [x] NSIS 在标准用户中安装、覆盖安装和卸载正常；下载目录和设置的数据保留策略符合预期。
+- [x] 已安装版本在带 WebView2 的 Windows 10 / 11 上完成联网引导与首次启动（最低系统要求见下）。
+- [x] 用非开发路径启动安装后的 GUI，确认首次运行引导安装工具；安装后从主程序目录下的 bin/ 加载三个工具。
+- [x] 在已安装版本的“关于”页手动检查更新：有新 Release 时显示版本，下载并启动 `*-setup.exe`，应用随后退出。
+- [x] 自动更新关闭时启动应用不下载；手动检查仍可用；有活动任务时更新进入等待状态，任务结束后只安装一次。
+- [x] 没有 `*-setup.exe`、使用开发版/便携版、GitHub API 失败或下载不完整时，界面显示错误且不替换当前程序。
 
-## 未验收范围
+## 系统要求与未验收范围
 
-- **WebView2 与干净系统**：无 Runtime 的干净 Windows 机器、离线引导器、断网、标准用户及失败恢复。当前由 [readme.md](../readme.md#todo) 跟踪。
+**最低支持 Windows 10 / 11。** 这两个系统自带 WebView2 Runtime，因此本项目不再为缺少 WebView2 的旧版 Windows 做主动适配，也不再保留该项验收待办。安装器仍保留 `downloadBootstrapper` 联网引导作为兜底；缺少运行时的机器若无法联网，不属于支持范围。
+
+以下项目不属于当前验证范围，也不作为发布门禁：
+
+- **旧版 Windows**：Windows 8.1 及更早系统、缺少 WebView2 Runtime 且无法联网的机器，均不受支持。
 - **安装与升级**：正式产品身份下的跨版本覆盖升级、交互式安装向导、卸载时“删除应用数据”选项、UAC 与权限边界。
-- **签名与提示**：SmartScreen 表现及代码签名。
+- **签名与提示**：安装包未签名，SmartScreen 表现与代码签名不在验证范围。
 - **真实网络**：真实上游两种工具配置的完整下载、安装、中断与升级；YouTube、Bilibili 等站点的实际下载、登录或地区限制场景。
-- **原生交互**：原生目录对话框、全部 UI 控件的手动操作、重启后的设置、损坏配置回退、封装编码兼容性和播放效果。
+- **原生交互**：全部 UI 控件的手动操作、损坏配置回退、封装编码兼容性和播放效果。
 - **进程退出**：强制结束或系统崩溃后的子进程残留；当前覆盖的是正常窗口关闭。
-- **许可审核**：第三方依赖的完整许可与源码审核，以及历史工具的重新分发事项，见 [licenses/RELEASE-CHECKLIST.md](../licenses/RELEASE-CHECKLIST.md)。
+- **许可审核**：第三方依赖的完整许可与源码审核，见 [licenses/RELEASE-CHECKLIST.md](../licenses/RELEASE-CHECKLIST.md)。

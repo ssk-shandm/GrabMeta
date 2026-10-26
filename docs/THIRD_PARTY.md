@@ -56,6 +56,6 @@ number-precision 已替换为项目自有 MIT 实现（`frontend/vendor/number-p
 具体审核动作和当前缺口见 [许可审核清单](../licenses/RELEASE-CHECKLIST.md)。这是对交付材料与适用条件的核对，不是收费认证。
 
 - 依赖组合条款和 WebView2 通知已记录在 `licenses/gui/`。
-- 无 Runtime 干净系统的 WebView2 验收尚未执行，见 [readme.md](../readme.md#todo)。
+- 最低支持 Windows 10 / 11，两者自带 WebView2 Runtime；本项目不再为缺少运行时的旧版 Windows 做适配或验收。安装器保留 `downloadBootstrapper` 联网引导作为兜底。
 
 在 `frontend/` 目录运行 `npm run licenses:check` 检查随包说明材料。工具下载成功不等于 GUI 代替上游承担第三方项目的许可证义务；发布时应保留清楚的上游链接和用户提示。

@@ -38,7 +38,7 @@ Vite 固定监听 `127.0.0.1:1420`，端口冲突时直接报错；Tauri 负责�
 | `npm run test:tools` | 联网工具安装/取消/升级烟测；仅使用隔离测试 EXE，需要下载较大的上游归档 |
 | `npm run licenses:installed -- <安装目录>` | 只读核验根 LICENSE 与 licenses/ 全部文件；不等于许可审核 |
 | `npm run licenses:check` | 检查许可材料、清单、哈希及打包配置 |
-| `npm run licenses:release` | 发布门禁，待办未清空时失败 |
+| `npm run licenses:release` | 发布门禁；`pending` 非空时失败（当前为空，通过） |
 | `npm audit` | 检查 JS 依赖公告；不要直接强制降级或升级全部依赖 |
 
 ## 修改代码
@@ -63,7 +63,7 @@ if ($LASTEXITCODE -ne 0) { throw '图标生成失败' }
 - 有效入口为 `frontend/src/main.ts` 与 `frontend/src-tauri/src/main.rs`。Python/Eel、Docker 和 PyInstaller 入口不再维护。
 - `frontend/vendor/` 存放项目自有依赖，目前是 `number-precision` 的替换实现，通过 `package.json` 的 `file:` 依赖和 `overrides` 引用。
 - `frontend/dist/` 是 Vite 构建产物，与旧版根目录 `dist/` 无关。
-- Git 忽略的本地产物包括：根目录 `bin/`、`frontend/node_modules/`、`frontend/dist/`、`frontend/src-tauri/target/`、`.ytdlp-gui-install-*/` 测试证据目录和 `tmp_ffmpeg_download/`。这些目录不提交，也不随安装包分发；需要保留的测试结论以 [测试与验收](TESTING.md) 为准。
+- Git 忽略的本地产物包括：根目录 `bin/`、`frontend/node_modules/`、`frontend/dist/`、`frontend/src-tauri/target/`、`.grabmeta-install-*/` 测试证据目录和 `tmp_ffmpeg_download/`（旧名 `.ytdlp-gui-install-*/` 仍保持忽略）。这些目录不提交，也不随安装包分发；需要保留的测试结论以 [测试与验收](TESTING.md) 为准。
 - 仓库只提交 `frontend/src-tauri/icons/` 中打包配置引用的 Windows ICO/PNG 及通用 `icon.png`。原始图稿、截图、下载媒体和测试安装证据不提交。
 - 前端业务代码使用 TypeScript；`scripts/` 与 `tests/` 中的 `.mjs` 文件是构建、烟测和测试脚本，不是旧版残留。
 - 文档中的相对链接由 `npm test` 检查。新增、删除或重命名 `docs/` 文件时，同步更新 [文档索引](README.md)。发布说明只使用 [发布说明模板](RELEASE_TEMPLATE.md)。
@@ -79,6 +79,6 @@ git show v2.0.1:legacy/python-eel/main.py
 
 ## 设置与数据
 
-设置文件位于 Tauri `app_config_dir()` 下的 `settings.json`；Windows 通常是 `%APPDATA%/com.ssk-shandm.ytdlp-gui/settings.json`。以运行时解析结果为准。默认下载目录来自系统 Downloads，不依赖工作目录。损坏或非法设置会回退默认值。旧配置没有 concurrentFragments 时自动补齐 8；有效范围为 1–16，UI 提供 1/4/8/16 路，保存时后端再次验证。
+设置文件位于 Tauri `app_config_dir()` 下的 `settings.json`；Windows 通常是 `%APPDATA%/com.ssk-shandm.grabmeta/settings.json`。以运行时解析结果为准。默认下载目录来自系统 Downloads，不依赖工作目录。损坏或非法设置会回退默认值。旧配置没有 concurrentFragments 时自动补齐 8；有效范围为 1–16，UI 提供 1/4/8/16 路，保存时后端再次验证。
 
 任务记录为本次运行内存状态，最多保留 200 条已结束任务；终端最多保留 2000 行。下载目录的文件不会因清空任务记录而删除。

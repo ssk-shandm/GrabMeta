@@ -6,8 +6,8 @@
 
 - 根目录 `LICENSE`：yt-dlp GUI 自有代码的 MIT License。
 - `NOTICE.txt`：当前安装包范围、工具获取方式及历史材料说明。
-- `release-status.json`：当前 GUI 分发范围和待办；`historicalTools` / `historicalPending` 单独保留旧工具记录，不表示当前随包分发。
-- `RELEASE-CHECKLIST.md`：区分当前 GUI 发布检查与重新分发旧工具时的待办。
+- `release-status.json`：当前 GUI 分发范围与待办状态；`historicalTools` 单独保留旧工具哈希记录，不表示当前随包分发。
+- `RELEASE-CHECKLIST.md`：许可核对记录，以及重新分发旧工具时需要满足的前置条件。
 
 安装包保留本目录和根目录 `LICENSE`。首次安装后不需要有三个工具 EXE 或 `bin/`；工具安装后才写入当前用户应用安装目录的 `bin/`。
 
@@ -29,6 +29,8 @@
 
 ## 检查范围
 
-在 frontend 目录运行 `npm run licenses:check` 检查说明材料及当前不捆绑工具的配置；`npm run licenses:release` 在当前 GUI 发布待办仍未完成时失败。历史工具未完成项单独保留，不应冒充当前安装包内容，也不能通过删除记录掩盖。
+在 frontend 目录运行 `npm run licenses:check` 检查说明材料及当前不捆绑工具的配置；`npm run licenses:release` 在当前 GUI 发布待办未完成时失败。当前 `pending` 与 `historicalPending` 均为空，两项检查均通过。
 
-GUI 的 MPL 准确版本源码现直接保存在 `gui/sources/`，获取说明见 `gui/SOURCE-NOTICE.txt`；这些 GUI 源码不能替代 yt-dlp / FFmpeg 的完整对应源码。本目录不是法律意见或第三方工具书面源码承诺。若未来重新分发工具二进制，应重新核验实际版本、来源、哈希、许可、通知和对应源码，完成独立的工具分发审核。
+`historicalTools` 仍保留旧工具哈希与来源记录，用于溯源；它们不代表当前随包分发内容，也不构成再分发承诺。若将来重新随包分发工具二进制，必须先完成独立的许可与对应源码审核，并把条目写回 `historicalPending`，否则门禁不会拦截。
+
+GUI 的 MPL 准确版本源码现直接保存在 `gui/sources/`，获取说明见 `gui/SOURCE-NOTICE.txt`；这些 GUI 源码不能替代 yt-dlp / FFmpeg 的完整对应源码。本目录不是法律意见或第三方工具书面源码承诺。

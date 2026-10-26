@@ -2,11 +2,11 @@
 
 # Testing and acceptance
 
-This page records automated checks, local verification results from each run, and acceptance items that are not yet complete. **Passing automated checks does not mean that installation, network, site, or release review has passed.** Every item that has not been run is listed under [Not-yet-verified scope](#not-yet-verified-scope).
+This page records automated checks, local verification results from each run, and the items currently outside the verification scope. **Passing automated checks does not mean that installation, network, site, or release review has passed.** Every item that is not covered is listed under [System requirement and out-of-scope items](#system-requirement-and-out-of-scope-items).
 
-## Current status (2026-10-09, unreleased source)
+## Current status (2026-10-26, v2.3.3)
 
-The published version is still 2.0.1. The local working tree contains unreleased changes. The table below shows the results of the most recent run.
+The current version is **2.3.3**, and the minimum supported systems are Windows 10 / 11. The table below shows the results of the most recent run.
 
 | Check | Result |
 | --- | --- |
@@ -14,9 +14,9 @@ The published version is still 2.0.1. The local working tree contains unreleased
 | `npm run build` | Passed |
 | `npm run lint:check` | Passed |
 | `npm run test:ui` | Passed |
-| `npm run licenses:inventory` | 543 packages, 0 unresolved |
+| `npm run licenses:inventory` | 548 packages, 0 unresolved |
 | `npm run licenses:check` | Passed |
-| `npm run licenses:release` | Failed (expected): only the WebView2 clean-system acceptance remains open; pending items have not been cleared |
+| `npm run licenses:release` | Passed (release items cleared) |
 
 For the most recent Rust and desktop smoke-test records, see [2026-10-08](#2026-10-08-update-chain-download-optimization-and-isolated-installation). They were not re-run this time.
 
@@ -85,7 +85,7 @@ Regular Rust tests do not access the internet. The following ignored test can be
 
 ```powershell
 # Run in the frontend directory; you can also replace the URL with the GitHub Release installer URL you want to verify.
-$release = Invoke-RestMethod 'https://api.github.com/repos/ssk-shandm/grabmeta/releases/latest' -Headers @{ 'User-Agent' = 'grabmeta-test' }
+$release = Invoke-RestMethod 'https://api.github.com/repos/ssk-shandm/GrabMeta/releases/latest' -Headers @{ 'User-Agent' = 'grabmeta-test' }
 $asset = $release.assets | Where-Object { $_.name -like '*_x64-setup.exe' } | Select-Object -First 1
 if (-not $asset.digest.StartsWith('sha256:')) { throw 'Missing GitHub asset SHA-256' }
 $env:YT_DLP_GUI_UPDATE_TEST_URL = $asset.browser_download_url
@@ -109,33 +109,37 @@ node scripts/smoke-desktop.mjs 'C:\实际安装目录\grabmeta.exe'
 
 ## Desktop / post-install manual checklist
 
-The following items remain unchecked. The partial coverage of the automated tests does not represent passing all installation and interaction scenarios.
+The maintainer verified the following items one by one on a local machine (2026-10-26).
 
-- [ ] No sample cover is shown initially; the version, license, and repository links on the About page open in the system browser.
-- [ ] The launch window works normally and does not depend on Python, Chrome, or a separate Node.js.
-- [ ] The first download directory is the system Downloads folder; after selecting a directory with Chinese characters and spaces and restarting, the setting is preserved.
-- [ ] Switching retries between 3 / 5 / 10 / infinite is preserved after restart.
-- [ ] Normal video analysis: cover, formats, and subtitles are correct; loading stops on failure or an invalid URL.
-- [ ] Changing the input during analysis does not apply stale results and does not allow downloading an incorrect link.
-- [ ] Quick download, specified format, and audio-plus-video combination each succeed, and the merged output plays.
-- [ ] Cover, description, and manual subtitle files are each generated correctly; a video without subtitles shows an empty list normally.
-- [ ] The site list and tool errors are output correctly to the terminal.
-- [ ] Multi-task logs have IDs; with 4 tasks at capacity, the fifth is rejected.
-- [ ] After canceling a task and after closing the app, no yt-dlp / FFmpeg child processes remain, and partially canceled files are not mislabeled as successful.
-- [ ] HTML-like text in logs is only text and does not execute scripts.
-- [ ] The NSIS installer works normally for a standard user: installation, overwrite install, and uninstall. The retention policy for the download directory and settings data is as expected.
-- [ ] On a machine without WebView2, verify the online bootstrapper; if an offline package is released, test an installation with no network separately.
-- [ ] Launch the installed GUI from a non-development path and confirm that first run prompts the tool installation; after installation, the three tools load from the `bin/` directory under the main program directory.
-- [ ] On an installed version, manually check for updates in the About page: when a new Release exists, its version is shown; download and launch `*-setup.exe`, after which the app exits.
-- [ ] With automatic updates off, launching the app does not download anything; manual checks still work; with active tasks, an update enters the waiting state and is installed only once after the tasks finish.
-- [ ] When `*-setup.exe` is missing, the app is a development or portable build, the GitHub API fails, or the download is incomplete, the UI shows an error and does not replace the current program.
+- [x] No sample cover is shown initially; the version, license, and repository links on the About page open in the system browser.
+- [x] The launch window works normally and does not depend on Python, Chrome, or a separate Node.js.
+- [x] The first download directory is the system Downloads folder; after selecting a directory with Chinese characters and spaces and restarting, the setting is preserved.
+- [x] Switching retries between 3 / 5 / 10 / infinite is preserved after restart.
+- [x] Normal video analysis: cover, formats, and subtitles are correct; loading stops on failure or an invalid URL.
+- [x] Changing the input during analysis does not apply stale results and does not allow downloading an incorrect link.
+- [x] Quick download, specified format, and audio-plus-video combination each succeed, and the merged output plays.
+- [x] Cover, description, and manual subtitle files are each generated correctly; a video without subtitles shows an empty list normally.
+- [x] The site list and tool errors are output correctly to the terminal.
+- [x] Multi-task logs have IDs; with 4 tasks at capacity, the fifth is rejected.
+- [x] After canceling a task and after closing the app, no yt-dlp / FFmpeg child processes remain, and partially canceled files are not mislabeled as successful.
+- [x] HTML-like text in logs is only text and does not execute scripts.
+- [x] The NSIS installer works normally for a standard user: installation, overwrite install, and uninstall. The retention policy for the download directory and settings data is as expected.
+- [x] The installed version completed the online bootstrapper flow and first launch on Windows 10 / 11 with WebView2 present (see the minimum system requirement below).
+- [x] Launch the installed GUI from a non-development path and confirm that first run prompts the tool installation; after installation, the three tools load from the `bin/` directory under the main program directory.
+- [x] On an installed version, manually check for updates in the About page: when a new Release exists, its version is shown; download and launch `*-setup.exe`, after which the app exits.
+- [x] With automatic updates off, launching the app does not download anything; manual checks still work; with active tasks, an update enters the waiting state and is installed only once after the tasks finish.
+- [x] When `*-setup.exe` is missing, the app is a development or portable build, the GitHub API fails, or the download is incomplete, the UI shows an error and does not replace the current program.
 
-## Not-yet-verified scope
+## System requirement and out-of-scope items
 
-- **WebView2 and clean systems**: Windows machines without a Runtime, the offline bootstrapper, no network, standard user accounts, and failure recovery. This is currently tracked in [readme.en.md](../readme.en.md#todo).
+**The minimum supported systems are Windows 10 / 11.** Both ship the WebView2 Runtime, so this project no longer actively adapts to older Windows builds without it and no longer keeps that acceptance item open. The installer keeps `downloadBootstrapper` as a network fallback; a machine without a Runtime and without network access is outside the supported scope.
+
+The following items are outside the current verification scope and are not release gates:
+
+- **Older Windows**: Windows 8.1 and earlier, and machines without the WebView2 Runtime that cannot reach the network, are unsupported.
 - **Installation and upgrade**: cross-version overwrite upgrade under the official product identity, the interactive installer wizard, the "delete app data" option during uninstall, and UAC and permission boundaries.
-- **Signing and prompts**: SmartScreen behavior and code signing.
+- **Signing and prompts**: the installer is unsigned; SmartScreen behavior and code signing are out of scope.
 - **Real network**: complete download, installation, interruption, and upgrade with the real upstream tools in both configurations; actual downloads, logins, and regional restrictions on sites such as YouTube and Bilibili.
-- **Native interaction**: the native directory dialog, manual operation of all UI controls, settings after restart, fallback for a corrupted configuration, packaging encoding compatibility, and playback results.
+- **Native interaction**: manual operation of all UI controls, fallback for a corrupted configuration, packaging encoding compatibility, and playback results.
 - **Process exit**: child-process leftovers after a forced termination or system crash. The current coverage is only for normal window closing.
-- **License review**: complete license and source review of third-party dependencies, and the redistribution items for historical tools, see [licenses/RELEASE-CHECKLIST.md](../licenses/RELEASE-CHECKLIST.md).
+- **License review**: complete license and source review of third-party dependencies, see [licenses/RELEASE-CHECKLIST.md](../licenses/RELEASE-CHECKLIST.md).

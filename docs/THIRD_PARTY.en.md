@@ -56,6 +56,6 @@ number-precision has been replaced by the project's own MIT implementation (`fro
 For the specific review actions and the current gaps, see the [license review checklist](../licenses/RELEASE-CHECKLIST.md). This is a check of the delivered materials and applicable terms, not a paid certification.
 
 - Dependency composite terms and WebView2 notices are recorded in `licenses/gui/`.
-- Acceptance on a clean system without a Runtime, for WebView2, has not been performed; see [readme.md](../readme.md#todo).
+- The minimum supported systems are Windows 10 / 11, both of which ship the WebView2 Runtime; this project no longer adapts to or validates older Windows builds without it. The installer keeps `downloadBootstrapper` as a network fallback.
 
 Run `npm run licenses:check` in the `frontend/` directory to check the license notice materials in the package. A successful tool download does not mean the GUI assumes the third-party projects' license obligations on their behalf; clear upstream links and user notices should be kept at release time.

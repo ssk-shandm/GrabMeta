@@ -1,4 +1,4 @@
-﻿# GUI 许可与源码交付记录（2026-10-08，未发布）
+# GUI 许可与源码交付记录（2026-10-08，未发布）
 
 ## 已落地
 
@@ -21,13 +21,13 @@
 
 实现未复制上游源码，上游 1.6.0 仅用于行为对照测试。若将来改回上游包，须重新处理其版权通知缺口。
 
-## WebView2 分发与未完成验收
+## WebView2 分发与支持范围
 
 生产配置维持 `downloadBootstrapper`，明确 `silent: true`（运行时引导程序静默，不等于 GUI 安装器不显示许可页）。已有满足要求的共享 Runtime 会复用；缺失时从 Microsoft 下载并安装。GUI 不内置 Evergreen 完整离线包或 Fixed Version Runtime；卸载 GUI 不删除共享运行时。网络失败或权限问题不得宣称可离线安装。
 
 Microsoft 官方下载页使用的 EULA API 已取回，原始 JSON、HTML 与仅转换排版/HTML 实体的纯文本分别保留。`runtime-distributor-terms.*` 是供发布者核对的分发条款，`runtime-consumer-terms.*` 是官网最终用户下载流程使用的条款；它们**不是 SDK Loader 的 BSD 通知**。安装前提示包含 Microsoft Defender SmartScreen 及 Microsoft 隐私入口，并明确第三方条款不改变 GUI MIT。
 
-自动/静默/被动安装不会让用户看见交互许可页；部署者须另行预先告知并取得适当同意，不能以“安装成功”作为同意证明。这一行为与无 WebView2 的干净 Windows、标准用户权限、下载失败恢复仍需独立验收。已存在 Runtime 的本机启动或隔离 `skip` 测试不能替代此验收，发布门禁仍保留。
+自动/静默/被动安装不会让用户看见交互许可页；部署者须另行预先告知并取得适当同意，不能以“安装成功”作为同意证明。最低支持 Windows 10 / 11，两者自带 Evergreen Runtime，因此无 Runtime 的旧版 Windows 与断网安装不属于支持范围，该项验收按产品决策关闭（不是验收通过）。已存在 Runtime 的本机启动与隔离 `skip` 测试只覆盖资源核验，不覆盖上述不支持场景。
 
 ## 官方依据及可复现命令
 
@@ -43,7 +43,7 @@ Microsoft 官方下载页使用的 EULA API 已取回，原始 JSON、HTML 与�
 npm run licenses:inventory       # 未解决通知存在时非零退出；仍生成清单
 npm run licenses:redistribution  # 精确源码核验、官网条款、安装告知和材料哈希
 npm run licenses:check           # 材料/哈希/锁文件/分发配置检查
-npm run licenses:release         # 未解决项仍会阻止发布
+npm run licenses:release         # 当前通过；待办非空时会阻止发布
 ```
 
 重新生成依赖清单后须重新运行 `licenses:redistribution`；该脚本不捏造 number-precision 通知，也不自动解除法律/安装验收待办。构建和资源核验记录见仓库 `docs/TESTING.md`；旧安装包不会因本次源码更改自动更新。

@@ -2,6 +2,24 @@
 
 # Changelog
 
+## [2.3.3] — 2026-10-26
+
+### System requirements and documentation
+
+- Explicitly documents the minimum supported systems as **Windows 10 / 11**. Both ship the WebView2 Runtime, and the app no longer actively adapts to or validates older Windows builds without it.
+- The installer keeps `downloadBootstrapper` as a network fallback; a machine without a Runtime and without network access is outside the supported scope.
+- Synchronized the version in `package.json`, `Cargo.toml`, and `tauri.conf.json` to 2.3.3.
+- Corrected the stale version number in the testing document (still said 2.0.1) and the license gate status (`licenses:release` now passes).
+- Updated the manual acceptance checklist and the not-yet-verified scope to reflect the completed verification.
+
+### Internal naming unified as GrabMeta
+
+- Frontend package name `yt-dlp` → `grabmeta`; Rust crate `yt-dlp-gui-cn` → `grabmeta` and library `yt_dlp_gui_lib` → `grabmeta_lib`. The main EXE, window title, and installer name were already GrabMeta; this only cleans up internal leftovers.
+- The auto-update preference key changed from `ytdlp.auto-update-check` to `grabmeta.auto-update-check`. **The old key is migrated automatically**, so users who turned automatic updates off are not silently opted back in.
+- The tool installer staging and backup prefixes are now `.grabmeta-*`; the older `.ytdlp-gui-bin-backup` directory is still read, so a machine with an interrupted install does not lose its `bin/`.
+- The app identifier changed from `com.ssk-shandm.ytdlp-gui` to **`com.ssk-shandm.grabmeta`**, fully matching the product name. Because the identifier determines the `%APPDATA%` config directory, the app migrates `settings.json` from the old directory once on startup, so upgrading users keep their download directory and preferences.
+- The updater validates the new identifier; the test build (`.install-test`) still cannot launch production updates.
+
 ## [2.3.2] — 2026-10-09
 
 ### Fixes

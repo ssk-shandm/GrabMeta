@@ -1,13 +1,16 @@
-# FFmpeg / ffprobe 源码获取说明
+# FFmpeg / ffprobe 历史本地构建记录（Gyan 9.0.2，非当前下载源）
 
-> **历史工具记录；当前 GUI 安装包不包含这些 EXE。历史工具重新分发准备未完成。** 本文是源码线索记录，不是 GPL 书面源码提供承诺，也不是已提供的完整对应源码。仅有 FFmpeg 上游提交和 configure 参数不包含静态依赖的准确版本、源码、补丁、许可通知及必要构建脚本。官方归档未完整下载，未与本地 EXE 比对。如需重新分发这些工具，应完成 licenses/RELEASE-CHECKLIST.md 中的历史工具待办。
+> **历史工具记录；当前 GUI 安装包不包含这些 EXE。** 本文只记录早期本地开发目录中的 Gyan 构建，用于溯源，**不代表应用实际下载的 FFmpeg**。
 
+## 当前实际下载源
 
+应用从 `BtbN/FFmpeg-Builds`（Windows 二进制构建供应方）下载，按用户选择取 `ffmpeg-master-latest-win64-lgpl.zip`（基础版）或 `-gpl.zip`（完整版）。实际版本、来源与校验记录写在安装目录的 `bin/licenses/installed-tools.json` 与 `bin/licenses/ffmpeg/` 中。上游获取资源包是本项目的设计方式，安装包不内置任何 FFmpeg 二进制。
 
+## 历史本地构建（Gyan）
 
-历史本地开发目录记录的 `ffmpeg.exe` 和 `ffprobe.exe` 是 Gyan FFmpeg Windows x64 Essentials static build。当前运行时下载使用 BtbN 供应方，这份旧 Gyan 记录不代表实际下载结果。
+历史本地开发目录记录的 `ffmpeg.exe` 和 `ffprobe.exe` 是 Gyan FFmpeg Windows x64 Essentials static build。
 
-## 对应构建
+### 对应构建
 
 - 构建版本：FFmpeg 9.0.2
 - 构建日期：2026-09-19
@@ -33,7 +36,7 @@ git -C FFmpeg checkout 946fcce07b
 
 ## 本构建配置
 
-本机 `ffmpeg.exe -buildconf` 报告的配置如下。`ffprobe.exe` 自报相同构建标识；本地文件尚未与该官方归档逐一比对：
+本机 `ffmpeg.exe -buildconf` 报告的历史构建配置如下。`ffprobe.exe` 自报相同构建标识。
 
 ```text
 --enable-gpl
@@ -96,8 +99,8 @@ git -C FFmpeg checkout 946fcce07b
 --enable-librubberband
 ```
 
-> 注：上面的列表按本地工具输出记录。若替换二进制，必须重新运行 `ffmpeg.exe -buildconf` 并更新本文件。若构建供应方对上游源代码、第三方库或构建脚本做了修改，也必须同时提供对应修改后的源码和构建材料；本文件不能替代该义务。
+> 注：上面的列表按历史本地工具输出记录。若将来改为随包分发二进制，必须重新运行 `ffmpeg.exe -buildconf` 并更新本文件；若构建供应方对上游源代码、第三方库或构建脚本做了修改，还须同时提供对应修改后的源码和构建材料。
 
 ## 许可
 
-该构建启用了 GPL 组件和 version3 组件。本目录保留 `COPYING.LGPLv2.1.txt`、`COPYING.GPLv2.txt` 和 `COPYING.GPLv3.txt` 作为历史参考材料，静态依赖的完整许可和版权通知尚未收集，不能据此认为已完成审核。实际许可应以构建中包含的组件和对应来源为准。
+该历史构建启用了 GPL 组件和 version3 组件。本目录保留 `COPYING.LGPLv2.1.txt`、`COPYING.GPLv2.txt` 和 `COPYING.GPLv3.txt` 作为参考材料。当前版本不随包分发 FFmpeg，用户下载的工具由上游供应方承担相应许可与源码义务；实际许可以 `bin/licenses/` 中记录的实际构建为准。

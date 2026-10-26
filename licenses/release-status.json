@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-08",
+  "checkedAt": "2026-10-26",
   "distribution": {
     "bundlesToolBinaries": false,
     "toolAcquisition": "user-selected upstream download after installation",
@@ -28,13 +28,20 @@
       "provenance": "local hash only; official archive comparison pending"
     }
   },
-  "historicalPending": [
-    "yt-dlp 打包组件的完整对应源码及必要构建材料",
-    "FFmpeg 官方归档与本地两个 EXE 的逐一比对",
-    "FFmpeg 静态依赖的许可/版权通知、准确版本、源码、补丁和必要构建脚本",
-    "发布页可直接取得的完整对应源码归档/稳定入口及可用性核验"
-  ],
+  "historicalPending": [],
   "completed": [
+    {
+      "item": "历史工具再分发材料待办清除（用户已确认：当前安装包不分发任何工具二进制）",
+      "checkedAt": "2026-10-26",
+      "scope": "yt-dlp / FFmpeg / ffprobe 均由用户在首次启动后从上游下载，安装包不含 EXE；历史工具记录仅作溯源保留。若将来改为随包分发，须重新完成完整对应源码、FFmpeg 归档比对、静态依赖通知与构建脚本，并恢复 historicalPending 记录",
+      "evidence": "licenses/README.md; docs/THIRD_PARTY.md; licenses/RELEASE-CHECKLIST.md"
+    },
+    {
+      "item": "WebView2 支持范围明确为 Windows 10 / 11（不再为无 Runtime 的旧版系统做适配或验收）",
+      "checkedAt": "2026-10-26",
+      "scope": "Win10 / Win11 自带 Evergreen Runtime；安装器保留 downloadBootstrapper 联网引导作为兜底。缺少运行时且无法联网的机器不属于支持范围，该项验收待办按产品决策关闭，不是验收通过",
+      "evidence": "readme.md#系统要求; docs/TESTING.md; licenses/gui/webview2/README.md"
+    },
     {
       "item": "vue-i18n 及 @intlify 相关五个 MIT 依赖的许可审核（用户已确认）",
       "checkedAt": "2026-10-09",

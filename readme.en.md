@@ -6,7 +6,7 @@
 
 **A Windows graphical interface for the yt-dlp video downloader**
 
-[![Version](https://img.shields.io/github/v/release/ssk-shandm/grabmeta?label=version)](https://github.com/ssk-shandm/grabmeta/releases)
+[![Version](https://img.shields.io/github/v/release/ssk-shandm/GrabMeta?label=version)](https://github.com/ssk-shandm/GrabMeta/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078D6?logo=windows&logoColor=white)](#development)
 [![Vue](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -126,12 +126,13 @@ The `LICENSE` file in the installer is the MIT license for this project's code. 
 
 The `licenses/` folder in the installer provides only upstream source information and usage notes. It does not indicate that the installer contains the third-party tools, and it is not the complete source material for those projects. For details, see [third-party tools and redistribution licenses](docs/THIRD_PARTY.md) (in Chinese).
 
+## System requirements
+
+- Minimum supported systems: **Windows 10 / 11** (x64). Both ship the WebView2 Runtime, so this project no longer actively adapts to older Windows builds without it.
+- The installer keeps `downloadBootstrapper` as a network fallback; a machine without a Runtime and without network access is outside the supported scope.
+
 ## TODO
 
 - **Licensing**: `number-precision` has been replaced by the project's own MIT implementation (`frontend/vendor/number-precision`), and the current version no longer depends on upstream 1.6.0. The complete copyright notice missing from upstream is not being pursued at this time and must not be filled in from npm author fields. If the project switches back to the upstream package, this gap must be addressed again.
-- **WebView2 clean-system acceptance (deferred until an issue is filed)**: on a clean Windows machine without the WebView2 Runtime, verify installation, first launch, the network-based runtime setup, and the offline and standard-user scenarios. A Linux VM cannot replace this test, because WebView2 and the NSIS installer only run on Windows. Record the results in `docs/TESTING.md`.
-- **Redistribution materials for historical tools** (does not affect using the current installer; only needed when redistributing yt-dlp / FFmpeg):
-  - Complete the full corresponding source and necessary build materials for the yt-dlp packaged components;
-  - Compare the FFmpeg official archive with the two local EXE files one by one;
-  - Complete the license/copyright notices, exact versions, source, patches, and necessary build scripts for FFmpeg static dependencies;
-  - Verify that the complete corresponding source archive or stable entry is directly available from the release page.
+
+The redistribution TODO for the historical tools (yt-dlp / FFmpeg) has been cleared: the current installer contains no third-party tool binaries, and the tools are downloaded from upstream on first launch. If the tools are ever bundled with the installer again, a separate license and corresponding-source review must be completed first. See [third-party tools and licenses](docs/THIRD_PARTY.md) and the [license review checklist](licenses/RELEASE-CHECKLIST.md).

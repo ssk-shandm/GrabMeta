@@ -2,6 +2,24 @@
 
 # 更新日志
 
+## [2.3.3] — 2026-10-26
+
+### 系统要求与文档
+
+- 明确最低支持 **Windows 10 / 11**。这两个系统自带 WebView2 Runtime，应用不再为缺少 WebView2 的旧版 Windows 做主动适配或验收。
+- 安装器仍保留 `downloadBootstrapper` 联网引导作为兜底；缺少运行时时若无法联网，不属于支持范围。
+- 同步 `package.json`、`Cargo.toml`、`tauri.conf.json` 版本号至 2.3.3。
+- 修正测试文档中滞后的版本号（此前仍写 2.0.1）与许可门禁状态（`licenses:release` 现已通过）。
+- 手动验收清单与未验收范围按实际验证结果更新为已完成。
+
+### 内部命名统一为 GrabMeta
+
+- 前端包名 `yt-dlp` → `grabmeta`；Rust crate `yt-dlp-gui-cn` → `grabmeta`，库 `yt_dlp_gui_lib` → `grabmeta_lib`。主 EXE、窗口标题和安装包名此前已是 GrabMeta，本次仅清理内部残留。
+- 自动更新偏好键 `ytdlp.auto-update-check` → `grabmeta.auto-update-check`。**旧键会被自动迁移**，已关闭自动更新的用户升级后不会被动重新开启。
+- 工具安装的暂存与备份目录前缀改为 `.grabmeta-*`；旧备份目录 `.ytdlp-gui-bin-backup` 仍可被读取，安装中断的机器不会丢失 `bin/`。
+- 应用标识 `com.ssk-shandm.ytdlp-gui` → **`com.ssk-shandm.grabmeta`**，与产品名完全统一。因标识决定 `%APPDATA%` 配置目录，应用启动时会把旧目录的 `settings.json` 自动迁移一次，升级用户的下载目录与偏好不会丢失。
+- 自动更新器同步校验新标识，测试版安装包（`.install-test`）仍无法启动正式版更新。
+
 ## [2.3.2] — 2026-10-09
 
 ### 修复
