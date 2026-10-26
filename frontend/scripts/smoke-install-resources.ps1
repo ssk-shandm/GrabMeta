@@ -3,11 +3,11 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.Encoding]::UTF8
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 $overlay = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'frontend\src-tauri\tauri.install-test.conf.json') | ConvertFrom-Json
-if ($overlay.identifier -ne 'com.ssk-shandm.ytdlp-gui.install-test' -or $overlay.productName -ne 'GrabMeta Install Test' -or $overlay.bundle.windows.webviewInstallMode.type -ne 'skip') { throw 'Unsafe test identity or WebView2 installation policy.' }
+if ($overlay.identifier -ne 'com.ssk-shandm.grabmeta.install-test' -or $overlay.productName -ne 'GrabMeta Install Test' -or $overlay.bundle.windows.webviewInstallMode.type -ne 'skip') { throw 'Unsafe test identity or WebView2 installation policy.' }
 $base = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'frontend\src-tauri\tauri.conf.json') | ConvertFrom-Json
 $testKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\GrabMeta Install Test'
 if (Test-Path -LiteralPath $testKey) { throw 'An isolated test installation already exists; refusing to overwrite it.' }
-$artifact = Join-Path $root ('.ytdlp-gui-install-resources-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
+$artifact = Join-Path $root ('.grabmeta-install-resources-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 $target = Join-Path $artifact '中文 空格 安装目录'
 New-Item -ItemType Directory -Path $artifact | Out-Null
 $installer = Join-Path $root "frontend\src-tauri\target\release\bundle\nsis\GrabMeta Install Test_$($base.version)_x64-setup.exe"
@@ -15,7 +15,7 @@ $protectedKeys = @('HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\yt
 function Get-ProtectedState {
     $state = [ordered]@{}
     foreach ($key in $protectedKeys) { $state[$key] = if (Test-Path -LiteralPath $key) { Get-ItemProperty -LiteralPath $key | Select-Object * -ExcludeProperty PSPath,PSParentPath,PSChildName,PSDrive,PSProvider } else { $null } }
-    $config = Join-Path $env:APPDATA 'com.ssk-shandm.ytdlp-gui\settings.json'
+    $config = Join-Path $env:APPDATA 'com.ssk-shandm.grabmeta\settings.json'
     $state.settings = if (Test-Path -LiteralPath $config) { (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash } else { $null }
     $state | ConvertTo-Json -Depth 10 -Compress
 }

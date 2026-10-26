@@ -10,7 +10,7 @@ import { chromium } from 'playwright-core'
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const port = 1422
 const baseUrl = `http://127.0.0.1:${port}`
-const artifactDir = await mkdtemp(join(tmpdir(), 'ytdlp-guide-'))
+const artifactDir = await mkdtemp(join(tmpdir(), 'grabmeta-guide-'))
 const browserPath =
   process.env.UI_BROWSER_PATH ||
   [

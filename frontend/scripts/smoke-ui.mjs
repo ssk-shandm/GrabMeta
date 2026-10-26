@@ -100,7 +100,7 @@ try {
   assert.equal(await page.locator('.switch-control input').isChecked(), false)
   await page.locator('.switch-control input').check()
   assert.equal(await page.locator('.switch-control input').isChecked(), true)
-  assert.equal(await page.evaluate(() => localStorage.getItem('ytdlp.auto-update-check')), 'true')
+  assert.equal(await page.evaluate(() => localStorage.getItem('grabmeta.auto-update-check')), 'true')
   await page.locator('.switch-control input').focus()
   await page.keyboard.press('Space')
   assert.equal(await page.locator('.switch-control input').isChecked(), false)
@@ -124,7 +124,7 @@ try {
     }
   })
   await page.locator('.repository-link').click()
-  assert.deepEqual(await page.evaluate(() => window.__openedUrls), ['https://github.com/ssk-shandm/grabmeta'])
+  assert.deepEqual(await page.evaluate(() => window.__openedUrls), ['https://github.com/ssk-shandm/GrabMeta'])
   const denied = await page.evaluate(async () => {
     const { openExternalUrl } = await import('/src/services/openExternal.ts')
     try {
@@ -145,7 +145,7 @@ try {
       },
     }
     try {
-      await openExternalUrl('https://github.com/ssk-shandm/grabmeta')
+      await openExternalUrl('https://github.com/ssk-shandm/GrabMeta')
       return call
     } finally {
       delete window.isTauri
@@ -153,7 +153,7 @@ try {
     }
   })
   assert.equal(nativeCall.command, 'plugin:opener|open_url')
-  assert.equal(nativeCall.args.url, 'https://github.com/ssk-shandm/grabmeta')
+  assert.equal(nativeCall.args.url, 'https://github.com/ssk-shandm/GrabMeta')
   await page.locator('a.nav-item[title="图片链接"]').click()
   await page.locator('.link-page').waitFor()
   assert.equal(await page.locator('#video-url input').inputValue(), 'https://example.com/video')

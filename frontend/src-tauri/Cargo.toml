@@ -1,6 +1,6 @@
 [package]
-name = "yt-dlp-gui-cn"
-version = "2.3.2"
+name = "grabmeta"
+version = "2.3.3"
 description = "Vue and Tauri desktop interface for yt-dlp"
 authors = ["GrabMeta contributors"]
 edition = "2021"
@@ -8,7 +8,7 @@ rust-version = "1.90"
 license = "MIT"
 
 [lib]
-name = "yt_dlp_gui_lib"
+name = "grabmeta_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

@@ -23,6 +23,11 @@ const YTDLP_REPOSITORY: &str = "yt-dlp/yt-dlp";
 const FFMPEG_REPOSITORY: &str = "BtbN/FFmpeg-Builds";
 const FILE_NAMES: [&str; 3] = ["yt-dlp.exe", "ffmpeg.exe", "ffprobe.exe"];
 const REDIRECT_REJECTED: &str = "redirect rejected";
+// Backup directory used to swap `bin/` atomically. Pre-2.3.3 builds used the old
+// project name; keep reading it so an install interrupted before the rename can
+// still be recovered instead of losing the tool directory.
+const BACKUP_NAME: &str = ".grabmeta-bin-backup";
+const LEGACY_BACKUP_NAME: &str = ".ytdlp-gui-bin-backup";
 
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
@@ -667,11 +672,13 @@ fn replace_install(stage: &Path, target: &Path) -> AppResult<()> {
     let parent = target
         .parent()
         .ok_or_else(|| AppError::new("tools.directoryUnknown"))?;
-    let backup = parent.join(".ytdlp-gui-bin-backup");
-    if backup.exists() {
+    let backup = parent.join(BACKUP_NAME);
+    let legacy_backup = parent.join(LEGACY_BACKUP_NAME);
+    if backup.exists() || legacy_backup.exists() {
         return Err(AppError::with(
             "tools.backupLeftover",
-            backup.display().to_string(),
+            backup.exists().then(|| backup.display().to_string())
+                .unwrap_or_else(|| legacy_backup.display().to_string()),
         ));
     }
     if target.exists() {
@@ -706,11 +713,18 @@ fn replace_install(stage: &Path, target: &Path) -> AppResult<()> {
     Ok(())
 }
 fn recover_backup(target: &Path) -> AppResult<()> {
-    let backup = target
+    let parent = target
         .parent()
-        .ok_or_else(|| AppError::new("tools.directoryUnknown"))?
-        .join(".ytdlp-gui-bin-backup");
-    if !target.exists() && backup.is_dir() && FILE_NAMES.iter().all(|n| backup.join(n).is_file()) {
+        .ok_or_else(|| AppError::new("tools.directoryUnknown"))?;
+    // Prefer the current name, but fall back to a backup left by a pre-2.3.3 build.
+    let backup = [parent.join(BACKUP_NAME), parent.join(LEGACY_BACKUP_NAME)]
+        .into_iter()
+        .find(|path| {
+            !target.exists()
+                && path.is_dir()
+                && FILE_NAMES.iter().all(|n| path.join(n).is_file())
+        });
+    if let Some(backup) = backup {
         fs::rename(&backup, target)
             .map_err(|e| AppError::with("tools.recoverFailed", e.to_string()))?;
     }
@@ -755,7 +769,7 @@ pub async fn download_tools(
         .duration_since(UNIX_EPOCH)
         .map_err(|e| AppError::with("tools.ioFailed", e.to_string()))?;
     let staging = Staging(parent.join(format!(
-        ".ytdlp-gui-install-{}-{}",
+        ".grabmeta-install-{}-{}",
         std::process::id(),
         stamp.as_nanos()
     )));
@@ -1090,13 +1104,13 @@ mod tests {
         replace_install(&stage, &target).unwrap();
         assert!(!target.join("old").exists());
         assert!(FILE_NAMES.iter().all(|n| target.join(n).exists()));
-        assert!(!dir.join(".ytdlp-gui-bin-backup").exists());
+        assert!(!dir.join(BACKUP_NAME).exists());
     }
     #[test]
     fn crash_recovery_restores_previous_directory() {
         let dir = temporary();
         let _cleanup = Staging(dir.clone());
-        let backup = dir.join(".ytdlp-gui-bin-backup");
+        let backup = dir.join(BACKUP_NAME);
         fs::create_dir(&backup).unwrap();
         for name in FILE_NAMES {
             fs::write(backup.join(name), "old").unwrap();

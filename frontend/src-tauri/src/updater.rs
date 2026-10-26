@@ -47,7 +47,7 @@ struct DownloadProgress {
 }
 
 fn validate_update_identity(identifier: &str) -> AppResult<()> {
-    if identifier != "com.ssk-shandm.ytdlp-gui" {
+    if identifier != "com.ssk-shandm.grabmeta" {
         return Err(AppError::new("update.isolatedBuild"));
     }
     Ok(())
@@ -66,7 +66,7 @@ fn validate_update_url(url: &str) -> AppResult<()> {
         return Err(AppError::new("update.urlNotTrusted"));
     }
     let path = parsed.path();
-    const PROJECT_RELEASE_PREFIX: &str = "/ssk-shandm/grabmeta/releases/download/";
+    const PROJECT_RELEASE_PREFIX: &str = "/ssk-shandm/GrabMeta/releases/download/";
     let path = path
         .get(..PROJECT_RELEASE_PREFIX.len())
         .filter(|prefix| prefix.eq_ignore_ascii_case(PROJECT_RELEASE_PREFIX))
@@ -178,7 +178,7 @@ pub async fn fetch_latest_release(app: AppHandle) -> AppResult<serde_json::Value
         .map_err(|_| AppError::new("update.settingsLocked"))?
         .clone();
     let response = update_http_client(Some(&settings))?
-        .get("https://api.github.com/repos/ssk-shandm/grabmeta/releases/latest")
+        .get("https://api.github.com/repos/ssk-shandm/GrabMeta/releases/latest")
         .header("Accept", "application/vnd.github+json")
         .timeout(Duration::from_secs(20))
         .send()
@@ -512,17 +512,17 @@ mod tests {
 
     #[test]
     fn update_urls_are_restricted_to_this_repository() {
-        assert!(validate_update_url("https://github.com/ssk-shandm/grabmeta/releases/download/v2.0.2/app_x64-setup.exe").is_ok());
+        assert!(validate_update_url("https://github.com/ssk-shandm/GrabMeta/releases/download/v2.0.2/app_x64-setup.exe").is_ok());
         assert!(validate_update_url("https://github.com/ssk-shandm/GrabMeta/releases/download/v2.3.0/GrabMeta_2.3.0_x64-setup.exe").is_ok());
         for url in [
-            "http://github.com/ssk-shandm/grabmeta/releases/download/v2.0.2/app.exe",
+            "http://github.com/ssk-shandm/GrabMeta/releases/download/v2.0.2/app.exe",
             "https://github.com/other/repo/releases/download/v2.0.2/app.exe",
-            "https://github.com/ssk-shandm/grabmeta/releases/latest",
-            "https://github.com.evil.example/ssk-shandm/grabmeta/releases/download/v2/app.exe",
-            "https://user@github.com/ssk-shandm/grabmeta/releases/download/v2/app.exe",
-            "https://github.com:8443/ssk-shandm/grabmeta/releases/download/v2/app.exe",
-            "https://github.com/ssk-shandm/grabmeta/releases/download/v2/app.exe?redirect=evil",
-            "https://github.com/ssk-shandm/grabmeta/releases/download/v2/app.exe#fragment",
+            "https://github.com/ssk-shandm/GrabMeta/releases/latest",
+            "https://github.com.evil.example/ssk-shandm/GrabMeta/releases/download/v2/app.exe",
+            "https://user@github.com/ssk-shandm/GrabMeta/releases/download/v2/app.exe",
+            "https://github.com:8443/ssk-shandm/GrabMeta/releases/download/v2/app.exe",
+            "https://github.com/ssk-shandm/GrabMeta/releases/download/v2/app.exe?redirect=evil",
+            "https://github.com/ssk-shandm/GrabMeta/releases/download/v2/app.exe#fragment",
             "https://release-assets.githubusercontent.com/asset.exe",
         ] {
             assert!(validate_update_url(url).is_err(), "{url}");
@@ -625,8 +625,9 @@ mod tests {
 
     #[test]
     fn nonproduction_identity_cannot_launch_production_updates() {
-        assert!(validate_update_identity("com.ssk-shandm.ytdlp-gui").is_ok());
-        assert!(validate_update_identity("com.ssk-shandm.ytdlp-gui.install-test").is_err());
+        assert!(validate_update_identity("com.ssk-shandm.grabmeta").is_ok());
+        assert!(validate_update_identity("com.ssk-shandm.grabmeta.install-test").is_err());
+        assert!(validate_update_identity("com.ssk-shandm.ytdlp-gui").is_err());
         assert!(validate_update_identity("another.app").is_err());
     }
 

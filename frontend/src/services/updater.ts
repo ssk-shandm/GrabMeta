@@ -6,12 +6,12 @@ import { APP_VERSION, RELEASES_URL } from '@/config/appInfo'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { watch } from 'vue'
 import { useTaskStore } from '@/stores/taskStore'
-import { createUpdateController, UPDATE_STORAGE_KEY, type UpdateInfo } from './updateController'
+import { createUpdateController, UPDATE_STORAGE_KEY, LEGACY_UPDATE_STORAGE_KEY, type UpdateInfo } from './updateController'
 import { noticeError } from './updateRelease'
 import { i18n } from '../i18n'
 import { errorText } from '../i18n/codes'
 
-const GITHUB_API_URL = 'https://api.github.com/repos/ssk-shandm/grabmeta/releases/latest'
+const GITHUB_API_URL = 'https://api.github.com/repos/ssk-shandm/GrabMeta/releases/latest'
 
 async function fetchReleaseInWebView(signal: AbortSignal): Promise<ReleaseData> {
   const response = await fetch(GITHUB_API_URL, {
@@ -66,7 +66,15 @@ export const appUpdater = createUpdateController({
       sha256: update.installerSha256,
     })
   },
-  readPreference: () => window.localStorage.getItem(UPDATE_STORAGE_KEY),
+  // Migrate the preference saved under the pre-2.3.3 key so the rename does not
+  // silently re-enable automatic updates for existing users.
+  readPreference: () => {
+    const current = window.localStorage.getItem(UPDATE_STORAGE_KEY)
+    if (current !== null) return current
+    const legacy = window.localStorage.getItem(LEGACY_UPDATE_STORAGE_KEY)
+    if (legacy !== null) window.localStorage.setItem(UPDATE_STORAGE_KEY, legacy)
+    return legacy
+  },
   savePreference: (value) => window.localStorage.setItem(UPDATE_STORAGE_KEY, value),
 })
 

@@ -73,7 +73,7 @@ test('installer test overlay isolates product, executable, app data and skips We
 
 test('resource smoke test guards the isolated identity and hides installer helpers', () => {
   const script = read(new URL('../scripts/smoke-install-resources.ps1', import.meta.url))
-  assert.match(script, /com\.ssk-shandm\.ytdlp-gui\.install-test/)
+  assert.match(script, /com\.ssk-shandm\.grabmeta\.install-test/)
   assert.match(script, /refusing to overwrite/)
   assert.match(script, /Unsafe uninstall target/)
   assert.match(script, /-WindowStyle Hidden/)

@@ -2,7 +2,7 @@ import { version } from '../../package.json'
 export const APP_VERSION = version
 export const COPYRIGHT_LINE = 'Copyright © 2025 ssk-shandm'
 export const LICENSE_NAME = 'MIT License'
-export const REPOSITORY_URL = 'https://github.com/ssk-shandm/grabmeta'
+export const REPOSITORY_URL = 'https://github.com/ssk-shandm/GrabMeta'
 export const RELEASES_URL = `${REPOSITORY_URL}/releases`
 export const LICENSE_URL = `${REPOSITORY_URL}/blob/main/LICENSE`
 export const YTDLP_URL = 'https://github.com/yt-dlp/yt-dlp'

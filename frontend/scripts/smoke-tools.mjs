@@ -16,9 +16,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const full = process.argv.includes('--full')
 const executable = resolve(process.argv.slice(2).find(arg => !arg.startsWith('--')) || join(root, 'frontend/src-tauri/target/release/grabmeta-install-test.exe'))
 assert.equal(executable.endsWith('grabmeta-install-test.exe'), true, 'Only the isolated release test executable is allowed')
-const artifact = join(root, '.ytdlp-gui-install-tools-' + new Date().toISOString().replaceAll(/[:.]/g, '-'))
+const artifact = join(root, '.grabmeta-install-tools-' + new Date().toISOString().replaceAll(/[:.]/g, '-'))
 const appDir = join(artifact, '中文 空格 程序')
-const settingsPath = join(process.env.APPDATA, 'com.ssk-shandm.ytdlp-gui.install-test', 'settings.json')
+const settingsPath = join(process.env.APPDATA, 'com.ssk-shandm.grabmeta.install-test', 'settings.json')
 const savedSettings = await readFile(settingsPath).catch(error => { if (error.code !== 'ENOENT') throw error; return null })
 await mkdir(appDir, { recursive: true })
 await copyFile(executable, join(appDir, 'grabmeta-install-test.exe'))
@@ -61,7 +61,7 @@ async function binSnapshot() {
   return Object.fromEntries(await Promise.all(files.map(async name => [name, await hash(join(appDir, 'bin', name))])))
 }
 async function cleanStaging() {
-  assert.deepEqual((await readdir(appDir)).filter(name => name.startsWith('.ytdlp-gui-')), [], 'Staging/backup was not cleaned')
+  assert.deepEqual((await readdir(appDir)).filter(name => name.startsWith('.grabmeta-')), [], 'Staging/backup was not cleaned')
 }
 function record(name) { results.checks.push(name); console.log('PASS', name) }
 async function begin(profile) {

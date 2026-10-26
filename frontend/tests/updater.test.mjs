@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { parseRelease, normalizeSha256, compareVersions } from '../src/services/updateRelease.ts'
-import { createUpdateController } from '../src/services/updateController.ts'
+import { createUpdateController, UPDATE_STORAGE_KEY, LEGACY_UPDATE_STORAGE_KEY } from '../src/services/updateController.ts'
 function fixture(overrides = {}) {
   const calls = []
   const deps = {
@@ -99,7 +99,7 @@ test('release updates use the GitHub Release NSIS installer directly', () => {
   assert.equal(config.plugins, undefined)
   const rust = read('../src-tauri/src/updater.rs')
   const frontend = read('../src/services/updater.ts')
-  assert.match(frontend, /api\.github\.com\/repos\/ssk-shandm\/grabmeta\/releases\/latest/)
+  assert.match(frontend, /api\.github\.com\/repos\/ssk-shandm\/GrabMeta\/releases\/latest/)
   assert.match(frontend, /fetch\(GITHUB_API_URL/)
   assert.match(frontend, /isTauri\(\)[\s\S]*?invoke<ReleaseData>\('fetch_latest_release'\)/)
   assert.match(frontend, /await initializeDesktop\(\)/)
@@ -172,4 +172,38 @@ test('native updater validates before locking tasks and signals install only aft
   assert.ok(rust.indexOf('verify_update_sha256(hash, expected_sha256)?') < rust.indexOf('launch_installer(&target'))
   assert.ok(rust.indexOf('launch_installer(&target') < rust.indexOf('"update-install-starting"'))
   assert.match(rust, /PartialDownload\(partial\.clone\(\)\)/)
+})
+
+test('auto-update preference migrates from the pre-2.3.3 storage key', () => {
+  const store = new Map()
+  const saved = globalThis.window
+  globalThis.window = {
+    localStorage: {
+      getItem: (key) => (store.has(key) ? store.get(key) : null),
+      setItem: (key, value) => store.set(key, value),
+    },
+  }
+  try {
+    // Simulates an upgrade: only the old key exists, and it disabled auto updates.
+    store.set(LEGACY_UPDATE_STORAGE_KEY, 'false')
+    const controller = createUpdateController({
+      isDesktop: () => true, activeTasks: () => false,
+      check: async () => ({ version: '1.0.0', available: false }),
+      install: async () => {},
+      readPreference: () => {
+        const current = window.localStorage.getItem(UPDATE_STORAGE_KEY)
+        if (current !== null) return current
+        const legacy = window.localStorage.getItem(LEGACY_UPDATE_STORAGE_KEY)
+        if (legacy !== null) window.localStorage.setItem(UPDATE_STORAGE_KEY, legacy)
+        return legacy
+      },
+      savePreference: (value) => window.localStorage.setItem(UPDATE_STORAGE_KEY, value),
+    })
+    controller.initializePreference()
+    assert.equal(controller.state.autoCheck, false, 'a disabled preference must survive the key rename')
+    assert.equal(store.get(UPDATE_STORAGE_KEY), 'false', 'the old value is copied to the new key')
+  } finally {
+    if (saved === undefined) delete globalThis.window
+    else globalThis.window = saved
+  }
 })

@@ -43,6 +43,7 @@ pnpm-debug.log*
 # Retired root PyInstaller outputs (prevent accidental reintroduction)
 /build/
 /dist/
+/grabmeta.spec
 /yt-dlp-gui-cn.spec
 /icon.ico
 
@@ -65,6 +66,9 @@ Thumbs.db
 *.key.pub
 
 /frontend/src-tauri/target-*/
+/.grabmeta-install-*/
+/.grabmeta-bin-backup/
+# Pre-2.3.3 names; kept so stale local evidence stays ignored.
 /.ytdlp-gui-install-*/
 /.ytdlp-gui-bin-backup/
 

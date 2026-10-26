@@ -25,7 +25,10 @@ export interface NoticeError extends Error {
   key: string
   params: NoticeParams
 }
-export const UPDATE_STORAGE_KEY = 'ytdlp.auto-update-check'
+export const UPDATE_STORAGE_KEY = 'grabmeta.auto-update-check'
+// Pre-2.3.3 builds stored the preference under the old project name. Read it as a
+// fallback so renaming the key does not silently re-enable automatic updates.
+export const LEGACY_UPDATE_STORAGE_KEY = 'ytdlp.auto-update-check'
 
 function isNoticeError(error: unknown): error is NoticeError {
   return error instanceof Error && typeof (error as Partial<NoticeError>).key === 'string'
